@@ -3,6 +3,9 @@
 
 #' @export
 new_gibble <- function(data, groups) {
+  if (is.numeric(groups)) {
+    groups <- names(data)[groups]
+  }
   structure(
     dplyr::grouped_df(data, groups),
     class = c("gibble_df", "sticky_df", "data.frame")

@@ -1,4 +1,15 @@
 
+test_that("can't unselect sticky columns", {
+  df <- new_gibble(mtcars, "cyl")
+
+  out <- df[1:3]
+  expect_identical(unstructure(out), unstructure(mtcars[1:3]))
+  expect_identical(sticky_cols(out), c(cyl = 2L))
+
+  expect_error(df[1], "Can't unselect sticky columns")
+})
+
+
 test_that("sticky cols are restored after renaming", {
   df <- new_gibble(mtcars, c("cyl", "vs"))
 

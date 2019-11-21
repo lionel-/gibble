@@ -4,6 +4,14 @@ sticky_cols <- function(x, ...) {
   UseMethod("sticky_cols")
 }
 
+#' @export
+`[.sticky_df` <- function(x, i) {
+  if (!all(sticky_cols(x) %in% i)) {
+    abort("Can't unselect sticky columns")
+  }
+  new_gibble(NextMethod(), sticky_cols(x))
+}
+
 
 #' @export
 `names<-.sticky_df` <- function(x, value) {
