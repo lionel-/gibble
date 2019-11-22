@@ -1,4 +1,10 @@
 
+test_that("sticky df have sticky cols", {
+  df <- new_gibble(mtcars, "cyl")
+  expect_identical(sticky_cols(df), c(cyl = 2L))
+  expect_true(inherits_all(df, c("gibble_df", "sticky_df", "data.frame")))
+})
+
 test_that("can't unselect sticky columns", {
   df <- new_gibble(mtcars, "cyl")
 
@@ -8,7 +14,6 @@ test_that("can't unselect sticky columns", {
 
   expect_error(df[1], "Can't unselect sticky columns")
 })
-
 
 test_that("sticky cols are restored after renaming", {
   df <- new_gibble(mtcars, c("cyl", "vs"))

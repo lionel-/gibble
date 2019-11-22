@@ -3,12 +3,20 @@
 
 #' @export
 new_gibble <- function(data, groups) {
+  # Compute groups in dplyr format
   if (is.numeric(groups)) {
-    groups <- names(data)[groups]
+    groups_vars <- names(data)[groups]
+    grouped <- dplyr::grouped_df(data, groups_vars)
+  } else {
+    grouped <- dplyr::grouped_df(data, groups)
   }
-  structure(
-    dplyr::grouped_df(data, groups),
-    class = c("gibble_df", "sticky_df", "data.frame")
+  dplyr_groups <- attr(grouped, "groups")
+
+  new_sticky(
+    data,
+    sticky = groups,
+    groups = dplyr_groups,
+    class = c("gibble_df", "grouped_df")
   )
 }
 
@@ -21,14 +29,6 @@ print.gibble_df <- function(x, ...) {
 
 
 # Sticky -------------------------------------------------------------
-
-#' @export
-sticky_cols.gibble_df <- function(x, ...) {
-  class(x) <- c("grouped_df", "data.frame")
-  vars <- dplyr::group_vars(x)
-  pos <- match(vars, names(x))
-  set_names(pos, vars)
-}
 
 #' @export
 restore_sticky_names.gibble_df <- function(x, to, new) {

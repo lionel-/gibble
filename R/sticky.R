@@ -1,7 +1,24 @@
 
 #' @export
+new_sticky <- function(x, sticky, ..., class = NULL) {
+  if (is_character(sticky)) {
+    sticky <- match(sticky, names(x))
+    if (anyNA(sticky)) {
+      abort("Can't find `sticky` columns in data frame.")
+    }
+  }
+  vctrs::new_data_frame(
+    x,
+    sticky = sticky,
+    ...,
+    class = c(class, "sticky_df")
+  )
+}
+
+#' @export
 sticky_cols <- function(x, ...) {
-  UseMethod("sticky_cols")
+  pos <- attr(x, "sticky")
+  set_names(pos, names(x)[pos])
 }
 
 #' @export
