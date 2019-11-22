@@ -36,7 +36,14 @@ test_that("sticky columns are always kept if sticky is 'keep'", {
 
   expect_is(out, "gibble_df")
   expect_named(out, c("cyl", "disp"))
-  expect_identical(sticky_pos(out), c(disp = 2L))
+  expect_identical(sticky_pos(out), c(cyl = 1L))
+
+  df <- new_gibble(mtcars, c("cyl", "vs"))
+  out <- df["disp", sticky = "keep"]
+
+  expect_is(out, "gibble_df")
+  expect_named(out, c("cyl", "vs", "disp"))
+  expect_identical(sticky_pos(out), c(cyl = 1L, vs = 2L))
 })
 
 test_that("sticky cols are restored after renaming", {
