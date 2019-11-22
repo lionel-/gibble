@@ -12,12 +12,25 @@ new_gibble <- function(data, groups) {
   }
   dplyr_groups <- attr(grouped, "groups")
 
-  new_sticky(
+  out <- new_sticky(
     data,
     sticky = groups,
     groups = dplyr_groups,
-    class = c("gibble_df", "grouped_df")
+    class = "gibble_df"
   )
+
+  # As a workaround, insert `grouped_df` after `sticky_df` so dplyr
+  # methods do not take over. That shouldn't be necessary, but we are
+  # kind of merging two classes together for experimentation purposes.
+  class <- class(out)
+  class <- append(
+    class,
+    "grouped_df",
+    after = match("data.frame", class) - 1L
+  )
+  class(out) <- class
+
+  out
 }
 
 #' @export
@@ -28,7 +41,15 @@ print.gibble_df <- function(x, ...) {
 }
 
 
-# Sticky -------------------------------------------------------------
+# vctrs --------------------------------------------------------------
+
+#' @export
+vec_restore.gibble_df <- function(x, to, ...) {
+  new_gibble(x, groups = sticky_cols(to))
+}
+
+
+# sticky -------------------------------------------------------------
 
 #' @export
 restore_sticky_names.gibble_df <- function(x, to, new) {

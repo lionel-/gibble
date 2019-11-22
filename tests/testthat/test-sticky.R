@@ -5,6 +5,11 @@ test_that("sticky df have sticky cols", {
   expect_true(inherits_all(df, c("gibble_df", "sticky_df", "data.frame")))
 })
 
+test_that("sticky df is restored after subsetting", {
+  out <- new_gibble(mtcars, "cyl")[1:3]
+  expect_true(inherits_all(out, c("gibble_df", "sticky_df", "data.frame")))
+})
+
 test_that("can't unselect sticky columns", {
   df <- new_gibble(mtcars, "cyl")
 

@@ -21,12 +21,23 @@ sticky_cols <- function(x, ...) {
   set_names(pos, names(x)[pos])
 }
 
+# vctrs --------------------------------------------------------------
+
+#' @importFrom vctrs vec_restore
+#' @export
+vec_restore.sticky_df <- function(x, to, ...) {
+  new_sticky(x, sticky = sticky_cols(to))
+}
+
+
+# base ---------------------------------------------------------------
+
 #' @export
 `[.sticky_df` <- function(x, i) {
   if (!all(sticky_cols(x) %in% i)) {
     abort("Can't unselect sticky columns")
   }
-  new_gibble(NextMethod(), sticky_cols(x))
+  vec_restore(NextMethod(), x)
 }
 
 

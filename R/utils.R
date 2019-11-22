@@ -1,5 +1,3 @@
-#' @import rlang
-NULL
 
 set_diff <- function(x, y) {
   vctrs::vec_unique(vctrs::vec_slice(x, !vctrs::vec_in(x, y)))
