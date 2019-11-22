@@ -33,11 +33,29 @@ vec_restore.sticky_df <- function(x, to, ...) {
 # base ---------------------------------------------------------------
 
 #' @export
-`[.sticky_df` <- function(x, i) {
-  if (!all(sticky_pos(x) %in% i)) {
-    abort("Can't unselect sticky columns")
+`[.sticky_df` <- function(x,
+                          i,
+                          ...,
+                          sticky = c("assert", "drop", "keep")) {
+  ellipsis::check_dots_empty()
+
+  i <- vctrs::vec_as_index(i, n = length(x), names = names(x))
+
+  sticky_pos <- sticky_pos(x)
+  if (!all(sticky_pos %in% i)) {
+    sticky <- match.arg(sticky, c("assert", "drop", "keep"))
+    i <- switch(sticky,
+      assert = abort("Can't unselect sticky columns"),
+      drop = i,
+      keep = union(sticky_pos, i)
+    )
   }
-  vec_restore(NextMethod(), x)
+
+  # Don't call NextMethod() because it doesn't support `sticky`
+  # argument
+  out <- as.data.frame(x)[i]
+
+  vec_restore(out, x)
 }
 
 

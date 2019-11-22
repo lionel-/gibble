@@ -45,7 +45,14 @@ print.gibble_df <- function(x, ...) {
 
 #' @export
 vec_restore.gibble_df <- function(x, to, ...) {
-  new_gibble(x, groups = sticky_pos(to))
+  sticky <- sticky_pos(to)
+  still_there <- names(sticky) %in% names(x)
+
+  if (any(still_there)) {
+    new_gibble(x, groups = sticky[still_there])
+  } else {
+    vctrs::new_data_frame(x)
+  }
 }
 
 
