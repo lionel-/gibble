@@ -36,7 +36,7 @@ new_gibble <- function(data, groups) {
 #' @export
 print.gibble_df <- function(x, ...) {
   cat("<gibble>\n")
-  groups <- names(sticky_cols(x))
+  groups <- names(sticky_pos(x))
   print(dplyr::grouped_df(x, groups))
 }
 
@@ -45,7 +45,7 @@ print.gibble_df <- function(x, ...) {
 
 #' @export
 vec_restore.gibble_df <- function(x, to, ...) {
-  new_gibble(x, groups = sticky_cols(to))
+  new_gibble(x, groups = sticky_pos(to))
 }
 
 
@@ -53,6 +53,6 @@ vec_restore.gibble_df <- function(x, to, ...) {
 
 #' @export
 restore_sticky_names.gibble_df <- function(x, to, new) {
-  groups <- names(x)[sticky_cols(to)]
+  groups <- names(x)[sticky_pos(to)]
   new_gibble(x, groups)
 }

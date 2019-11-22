@@ -16,7 +16,7 @@ new_sticky <- function(x, sticky, ..., class = NULL) {
 }
 
 #' @export
-sticky_cols <- function(x, ...) {
+sticky_pos <- function(x, ...) {
   pos <- attr(x, "sticky")
   set_names(pos, names(x)[pos])
 }
@@ -26,7 +26,7 @@ sticky_cols <- function(x, ...) {
 #' @importFrom vctrs vec_restore
 #' @export
 vec_restore.sticky_df <- function(x, to, ...) {
-  new_sticky(x, sticky = sticky_cols(to))
+  new_sticky(x, sticky = sticky_pos(to))
 }
 
 
@@ -34,7 +34,7 @@ vec_restore.sticky_df <- function(x, to, ...) {
 
 #' @export
 `[.sticky_df` <- function(x, i) {
-  if (!all(sticky_cols(x) %in% i)) {
+  if (!all(sticky_pos(x) %in% i)) {
     abort("Can't unselect sticky columns")
   }
   vec_restore(NextMethod(), x)
@@ -47,7 +47,7 @@ vec_restore.sticky_df <- function(x, to, ...) {
 
   nms <- names(out)
   changed <- which(names(x) != value)
-  pos <- sticky_cols(x)
+  pos <- sticky_pos(x)
   pos <- pos[pos %in% changed]
 
   if (length(pos)) {
